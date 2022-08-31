@@ -7,7 +7,7 @@
 // left top is 0,0
 // right bottom is 7,7
 
-int
+void
 init_direction()
 {
     int i;
@@ -17,12 +17,16 @@ init_direction()
     for(i = -1; i =< 1; i++)
     {
         for(j = -1; j =< 1; j++)
-    }
+        {
+            DIRECTIONS[dir_index]->x = i;
+            DIRECTIONS[dir_index]->y = j;
 
-    return 0;
+            dir_index++;
+        }
+    }
 }
 
-int
+void
 init_board(int board[8][8])
 {
     int i;
@@ -41,8 +45,6 @@ init_board(int board[8][8])
 
     board[3][4] = 2;
     board[4][3] = 2;
-
-    return 0;
 }
 
 int
@@ -106,38 +108,38 @@ is_gameover(int board[8][8])
     return 0;
 }
 
-int
+struct point*
 check_empty(int board[8][8], int x, int y)
 {
-    /*
-    direction bits
-    128  64  32
-     16       8
-      4   2   1
-    */
+/*
+    direction index
+    0 1 2
+    3   4
+    5 6 7
+*/
     int ret  = 0b00000000;
     int turn = board[x][y];
 
     int direction = 256;
 
     int i;
-    int j;
 
-    for (i = -1; i < 1; i++)
+    int tmp_x;
+    int tmp_y;
+
+    struct point ret[8];
+
+    int point_index = 0;
+
+    for (i = 0; i < 8; i++)
     {
-        for (j = -1; j < 1; j++)
+        tmp_x = x + DIRECTIONS[i]->x;
+        tmp_y = y + DIRECTIONS[i]->y;
+
+        if (board[tmp_x][tmp_y] == 0)
         {
-            direction >>= 1;
-
-            if ((x + i) < 0 || (y + j) < 0)
-                continue;
-
-            if (board[x + i][y + j] == 0)
-            {
-                ret |= direction;
-            }
-
-            direction = check_empty(board, i, j);
+            ret[point_index]->x = tmp_x;
+            ret[point_index]->y = tmp_y;
         }
     }
 
@@ -145,14 +147,12 @@ check_empty(int board[8][8], int x, int y)
 }
 
 struct point*
-is_playable(int board[8][8], int turn)
+get_playable(int board[8][8], int turn)
 {
-    struct point* points = new struct point;
-
     int i;
     int j;
 
-    int direction;
+    struct point** points = new struct point*;
 
     for (i = 0; i < 8; i++)
     {
@@ -161,10 +161,9 @@ is_playable(int board[8][8], int turn)
             if (board[i][j] == 0 || board[i][j] == turn)
                 continue;
 
-            direction = check_empty(board, i, j);
+            points = new struct point*;
 
-            if (!direction)
-                continue;
+            check_empty(board, i, j);
         }
     }
 
@@ -175,14 +174,33 @@ int
 play_othello(int board[8][8])
 {
     int turn = 1;
+    int winner;
+
+    struct point* points;
 
     while (is_gameover(board))
     {
-
         print_board(board);
+
+        points = get_playable(board, turn);
+
+        set_stone(board, points);
+
+        turn = togle_turn(turn);
     }
 
-    return 0;
+    winner = win_check(board);
+
+    return winner;
+}
+
+int togle_turn(int turn)
+{
+    if (turn == 1)
+        return 2;
+
+    else
+        return 1;
 }
 
 int
@@ -190,9 +208,14 @@ main()
 {
     int board[8][8];
 
-    init_board(board);
+    int winner;
 
-    play_othello(board);
+    init_board(board);
+    init_direction(board);
+
+    winner = play_othello(board);
+
+    printf("player%d has won", winner);
 
     return 0;
 }
