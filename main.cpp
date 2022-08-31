@@ -8,6 +8,21 @@
 // right bottom is 7,7
 
 int
+init_direction()
+{
+    int i;
+    int j;
+    int dir_index = 0;
+
+    for(i = -1; i =< 1; i++)
+    {
+        for(j = -1; j =< 1; j++)
+    }
+
+    return 0;
+}
+
+int
 init_board(int board[8][8])
 {
     int i;
