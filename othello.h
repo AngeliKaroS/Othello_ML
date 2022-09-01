@@ -1,4 +1,6 @@
-#include "linked_list.h";
+#pragma once
+
+#include "linked_list.h"
 
 struct point
 {
@@ -6,10 +8,15 @@ struct point
     int y;
 };
 
-const struct point DIRECTIONS[8];
+struct point DIRECTIONS[8];
 
-void          print_board(int board[8][8]);
+LinkedList list;
+
+struct point* check_empty(int board[8][8], int x, int y);
 struct point* get_playable(int board[8][8], int turn);
-void          set_stone(int board[8][8], int turn);
+void          init_direction();
+void          init_board(int board[8][8]);
+int           print_board(int board[8][8]);
+int           is_gameover(int board[8][8]);
+int           play_othello(int board[8][8]);
 int           togle_turn(int turn);
-int           win check(int board[8][8]);

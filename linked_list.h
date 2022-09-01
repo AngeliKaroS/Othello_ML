@@ -1,17 +1,19 @@
+#pragma once
+
 #include "othello.h"
 
-public class Node
+class Node
 {
 public:
     Node* next;
     struct point* value;
 };
 
-public class LinkedList
+class LinkedList
 {
 public:
     int   append(Node node);
-    int   delete(int index);
+    int   remove(int index);
     Node* pop();
     Node* shift();
 
@@ -20,5 +22,6 @@ public:
 
 private:
     Node* head;
+    Node* tail;
     int   length;
 };

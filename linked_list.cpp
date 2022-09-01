@@ -6,6 +6,7 @@ LinkedList::LinkedList()
     Node* node = new Node;
 
     head = node;
+    tail = node;
 }
 
 ~LinkedList::LinkedList()
@@ -21,16 +22,21 @@ LinkedList::LinkedList()
 }
 
 int
-LinkedList::append(Node* node)
+LinkedList::append(struct point* point)
 {
-    tail->next = node;
-    tail = node;
+    if (tail->value != NULL)
+    {
+        tail->next = new Node;
+        tail = tail->next;
+    }
+
+    tail->value = point;
 
     return 0;
 }
 
 int
-LinkedList::delete(int index)
+LinkedList::remove(int index)
 {
     Node* before;
     current = head;
@@ -40,6 +46,9 @@ LinkedList::delete(int index)
     {
         if (idx == index)
         {
+            if (current == tail)
+                tail = before;
+
             before->next = current->next
             delete(current);
             return 0;
